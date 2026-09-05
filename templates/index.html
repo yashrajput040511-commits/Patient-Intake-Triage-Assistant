@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient Intake Triage Assistant | PS01</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <!-- Ambient background orbs -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <div>
+            <div class="logo-title">TriageAI</div>
+            <div class="logo-sub">Track ID: PS01</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-label">Triage Rules</div>
+        <div class="rule-list">
+          <div class="rule-item level-1"><span class="rule-badge l1">L1</span><span>CP-01 Chest Pain</span></div>
+          <div class="rule-item level-1"><span class="rule-badge l1">L1</span><span>BD-01 Breathing</span></div>
+          <div class="rule-item level-2"><span class="rule-badge l2">L2</span><span>FV-01 Fever High Risk</span></div>
+          <div class="rule-item level-2"><span class="rule-badge l2">L2</span><span>AP-01 Abdominal High</span></div>
+          <div class="rule-item level-2"><span class="rule-badge l2">L2</span><span>IN-02 Serious Injury</span></div>
+          <div class="rule-item level-3"><span class="rule-badge l3">L3</span><span>FV-02 Fever Standard</span></div>
+          <div class="rule-item level-3"><span class="rule-badge l3">L3</span><span>AP-02 Abdominal Mod.</span></div>
+          <div class="rule-item level-4"><span class="rule-badge l4">L4</span><span>IN-01 Minor Injury</span></div>
+          <div class="rule-item level-esc"><span class="rule-badge lesc">ESC</span><span>ESC-01 Escalation</span></div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-label">Session Info</div>
+        <div class="session-info">
+          <div class="info-row"><span>Status</span><span id="session-status" class="status-badge status-idle">Idle</span></div>
+          <div class="info-row"><span>Messages</span><span id="msg-count">0</span></div>
+          <div class="info-row"><span>Session</span><span id="session-id-display">—</span></div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="disclaimer-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          This system does <strong>not</strong> diagnose. It is a triage routing tool only.
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main chat area -->
+    <main class="main">
+      <!-- Top bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-title">Patient Intake Triage Assistant</div>
+          <div class="topbar-sub">Walk-In Clinic — AI-Powered Routing System</div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn-new-session" id="newSessionBtn" onclick="startNewSession()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.24"/></svg>
+            New Session
+          </button>
+        </div>
+      </header>
+
+      <!-- Chat messages -->
+      <div class="chat-area" id="chatArea">
+        <div class="start-screen" id="startScreen">
+          <div class="start-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h2>Patient Intake Triage</h2>
+          <p>Click <strong>Start Triage Session</strong> to begin. Describe your symptoms in plain language and the AI will ask follow-up questions, evaluate your case against clinical rules, and generate a structured triage note.</p>
+          <button class="btn-start" onclick="startNewSession()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            Start Triage Session
+          </button>
+        </div>
+      </div>
+
+      <!-- Triage note panel (hidden until generated) -->
+      <div class="triage-note-panel" id="triageNotePanel" style="display:none;">
+        <div class="note-header">
+          <div class="note-title-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>Triage Note Generated</span>
+          </div>
+          <div id="urgency-badge" class="urgency-badge"></div>
+        </div>
+        <div class="note-body" id="noteBody"></div>
+        <div class="note-disclaimer">
+          ⚠ This is a routing recommendation only and does not constitute a medical diagnosis or clinical assessment.
+        </div>
+      </div>
+
+      <!-- Input area -->
+      <div class="input-area" id="inputArea" style="display:none;">
+        <div class="input-wrapper">
+          <textarea
+            id="userInput"
+            placeholder="Describe your symptoms in your own words..."
+            rows="1"
+            onkeydown="handleKeyDown(event)"
+            oninput="autoResize(this)"
+          ></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="input-hint">Press <kbd>Enter</kbd> to send &nbsp;·&nbsp; <kbd>Shift+Enter</kbd> for new line</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
